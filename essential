@@ -1,0 +1,34 @@
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
+ACCEPT     udp  --  0.0.0.0/0            0.0.0.0/0            udp spt:123
+ACCEPT     tcp  --  0.0.0.0/0            0.0.0.0/0            state NEW tcp dpt:22
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-host-prohibited
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+InstanceServices  all  --  0.0.0.0/0            169.254.0.0/16
+
+Chain InstanceServices (1 references)
+target     prot opt source               destination
+ACCEPT     tcp  --  0.0.0.0/0            169.254.0.2          owner UID match 0 tcp dpt:3260 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     tcp  --  0.0.0.0/0            169.254.2.0/24       owner UID match 0 tcp dpt:3260 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     tcp  --  0.0.0.0/0            169.254.4.0/24       owner UID match 0 tcp dpt:3260 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     tcp  --  0.0.0.0/0            169.254.5.0/24       owner UID match 0 tcp dpt:3260 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     tcp  --  0.0.0.0/0            169.254.0.2          tcp dpt:80 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     udp  --  0.0.0.0/0            169.254.169.254      udp dpt:53 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     tcp  --  0.0.0.0/0            169.254.169.254      tcp dpt:53 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     tcp  --  0.0.0.0/0            169.254.0.3          owner UID match 0 tcp dpt:80 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     tcp  --  0.0.0.0/0            169.254.0.4          tcp dpt:80 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     tcp  --  0.0.0.0/0            169.254.169.254      tcp dpt:80 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     udp  --  0.0.0.0/0            169.254.169.254      udp dpt:67 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     udp  --  0.0.0.0/0            169.254.169.254      udp dpt:69 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+ACCEPT     udp  --  0.0.0.0/0            169.254.169.254      udp dpt:123 /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */
+REJECT     tcp  --  0.0.0.0/0            169.254.0.0/16       tcp /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */ reject-with tcp-reset
+REJECT     udp  --  0.0.0.0/0            169.254.0.0/16       udp /* See the Oracle-Provided Images section in the Oracle Cloud Infrastructure documentation for security impact of modifying or removing this rule */ reject-with icmp-port-unreachable
